@@ -1,19 +1,33 @@
 ﻿/* Copyright 2014 John Lewin lewin76@gmail.com */
 
 var tab,
-	activeItem,
-	baseUrl = 'http://localhost:8085/',
+	currentUrlInfo,
 	importedCount = 0,
-	queuedExamples,
-	id;
+	urlsToCollect,
+	id,
+    source = 'http://localhost:8000/url-list',
+    postToUrl = 'http://localhost:8000/';
+    
+    
+function init() {
+    // Collect url list
+    var xhr = new XMLHttpRequest();
+    var resp;
+    xhr.open("GET", source, true);
+    xhr.onload = function () {
+
+        urlsToCollect = JSON.parse(xhr.responseText);
+
+    }
+    xhr.send();
+}
+
+init();
 
 // Hook browserAction click event
 chrome.browserAction.onClicked.addListener(function (activeTab) {
 	
 	console.time("tjs import");
-	
-	initFiles();
-
 	id = JSON.stringify(new Date()).replace(/:/g, '-').replace(/\"/g, '').substring(0, 19);
 
 	// Load the examples page
@@ -29,7 +43,7 @@ chrome.browserAction.onClicked.addListener(function (activeTab) {
 // Register to receive message from getTabContent.js
 chrome.runtime.onMessage.addListener(function (request) {
 
-    // Once we've recieved the page information, pass that along into CaptureScreenShot to resume the process
+    // Once the page has loaded, perform the CaptureScreenShot behavior and resume the collection process
     if (request.loaded /* && importedCount++ < 5 */) {
 
     	setTimeout(CaptureScreenShot, 1000, false);
@@ -37,37 +51,21 @@ chrome.runtime.onMessage.addListener(function (request) {
     }
 });
 
-function initFiles() {
-
-	// Flatten and store file names of examples
-	queuedExamples = [];
-
-	for (var f in exampleFiles) {
-		var items = exampleFiles[f];
-
-		for (var i = 0, length = items.length; i < length; i++) {
-			queuedExamples.push(items[i]);
-		}
-	}
-}
-
 function processNextItem() {
 
-	var exampleName = queuedExamples.pop();
+	currentUrlInfo = urlsToCollect.pop();
 
-	if (!exampleName) {
+	if (!currentUrlInfo) {
 
 		console.timeEnd("tjs import");
 		return;
 
 	}
 
-	activeItem = exampleName;
-    
-    // We're currently using hardcoded logic that intimately knows the relationship between the example files and the target urls. In
+	// We're currently using hard-coded logic that intimately knows the relationship between the example files and the target urls. In
     // the future this should be adapted so we call a url supplied by the user, view config or similar that returns a list of urls 
     // to process
-	chrome.tabs.update(tab.id, { url: baseUrl + 'examples/' + exampleName + '.html' }, function (loaded) {
+	chrome.tabs.update(tab.id, { url: currentUrlInfo[1] }, function (loaded) {
 
 		tab = loaded;
 
@@ -85,12 +83,11 @@ function CaptureScreenShot() {
 
 		var xhr = new XMLHttpRequest(), formData = new FormData();
 		formData.append("screenShot", img);
-		
-		xhr.open("POST", "http://localhost:8000/", true);
+		xhr.open("POST", postToUrl, true);
 
 		//xhr.setRequestHeader('tjs-batch', id);
         // Pass the name through to the node.js code so it knows how to name the posted data
-		xhr.setRequestHeader('tjs-name', activeItem);
+		xhr.setRequestHeader('tjs-name', currentUrlInfo[0]);
 
 		// Finally hook up a handler to the response which displays the results in a new tab
 		xhr.addEventListener("load", function () {

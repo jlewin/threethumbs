@@ -15,6 +15,6 @@
         "48" : "capture48.png"
     },
     "background" : {
-        "scripts": ["background.js", "Examples.js"]
+        "scripts": ["background.js"]
     }
 }
