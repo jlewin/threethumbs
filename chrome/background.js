@@ -4,19 +4,20 @@ var tab,
 	currentUrlInfo,
 	importedCount = 0,
 	urlsToCollect,
+    allUrls,
 	id,
     source = 'http://localhost:8000/url-list',
     postToUrl = 'http://localhost:8000/';
     
     
 function init() {
-    // Collect url list
+    // On load, connect to a currently hard-coded url to retrieve the list
+    // of urls we need collect
     var xhr = new XMLHttpRequest();
-    var resp;
     xhr.open("GET", source, true);
     xhr.onload = function () {
 
-        urlsToCollect = JSON.parse(xhr.responseText);
+        allUrls = JSON.parse(xhr.responseText);
 
     }
     xhr.send();
@@ -29,6 +30,8 @@ chrome.browserAction.onClicked.addListener(function (activeTab) {
 	
 	console.time("tjs import");
 	id = JSON.stringify(new Date()).replace(/:/g, '-').replace(/\"/g, '').substring(0, 19);
+
+    urlsToCollect = allUrls.slice(0);
 
 	// Load the examples page
 	chrome.tabs.create({ url: 'about:blank' }, function (loaded) {
@@ -62,9 +65,7 @@ function processNextItem() {
 
 	}
 
-	// We're currently using hard-coded logic that intimately knows the relationship between the example files and the target urls. In
-    // the future this should be adapted so we call a url supplied by the user, view config or similar that returns a list of urls 
-    // to process
+	// Navigate to the next url in the list
 	chrome.tabs.update(tab.id, { url: currentUrlInfo[1] }, function (loaded) {
 
 		tab = loaded;

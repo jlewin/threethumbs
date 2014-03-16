@@ -13,16 +13,36 @@ var port = 8000,
     baseUrl = 'http://localhost:8085/';
 
 var exampleFiles = 'Unable to find examples.js';
-fs.readFile(__dirname + '/examples.js', { encoding: 'utf8' }, function(err, data) {
 
-  if(!err) {
+//loadThreeJSExamples();
 
-    exampleFiles = JSON.parse(data);
-    initFiles();
+loadSimpleAlternatives();
 
-  }
+function loadThreeJSExamples() {
+    fs.readFile(__dirname + '/examples.js', { encoding: 'utf8' }, function(err, data) {
 
-});
+      if(!err) {
+
+        exampleFiles = JSON.parse(data);
+        initFiles();
+
+      }
+
+    });
+
+}
+
+// Test the ability to push unique urls to the chrome extension to drive thumbnail captures
+function loadSimpleAlternatives() {
+
+    var files = '05-motormount_short.stl;Arduino_Mega_8mm_Mount001.stl;Arduino_Mount_M6.stl;biggearmod_fixed_1.stl;Danaher-DEFAULT.stl;gah.stl;gregs-wade-v5-mrice-idler-for-M4screws.stl;INGENTIS cut up w-color.stl;MinecraftSupports.stl;NEMA 17.STL;No_Bobbin_XY_A.stl;nuttrap.stl;Plate 6 - Wolf Extruder.stl;Power_Supply_Cover.stl;ramps_14_for_i3_box.stl;Ramps_Mount_with_3DR-Simple-GOYO-Spool-Holder.STL;smallgearmod_fixed_1 (1).stl;smallgearmod_fixed_1.stl;Top_1.stl;Untitled.stl;uploads-55-0a-c1-99-1f-3d_print_screw_hole_test.stl;yourMesh.stl'.split(';');
+
+    queuedExamples = files.map(function(f) {
+        return [f, 'http://localhost:8085/editor/?stl=' + f];
+    });
+
+}
+
 
 function initFiles() {
 
