@@ -16,7 +16,7 @@ var http = require('http'),
     initThreeJSConfig()
 
 function initThreeJSConfig() {
-    fs.readFile(__dirname + '/examples.js', { encoding: 'utf8' }, function(err, data) {
+    fs.readFile(__dirname + '/threejs_examples.js', { encoding: 'utf8' }, function(err, data) {
 
       if(!err) {
         thumbConfigs['threejs'] = {
@@ -29,7 +29,7 @@ function initThreeJSConfig() {
     
     function flattenGroups(groupedExamples) {
 
-        // Flatten and store file names of Three.js examples - they are grouped in examples.js
+        // Flatten and store file names of Three.js examples - they are grouped in threejs_examples.js
         // by category. Remove the grouping and return an array of page urls
         var pages = [];
 
