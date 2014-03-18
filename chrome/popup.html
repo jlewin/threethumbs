@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html>
+  <script type="text/javascript" src="popup.js"></script>
+  <style>
+    html {
+        width: 600px;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        font-size: 12px;
+    }
+    body {
+        margin: 0;
+    }
+    #historyBox {
+        width: 200px;
+        float: left;
+    }
+    #history {
+        width: 100%;
+    }
+    
+    #loaderBox {
+        margin-left: 215px;
+    }
+    
+    h2 {
+        font-size: 1.1em;
+        margin: 4px 0 0;
+    }
+    
+    #pages {
+        overflow: hidden;
+        margin: 0;
+        padding: 0 0 0 30px;
+    }
+    
+    #load {
+        padding: 8px;
+    }
+    
+    #pages li {
+        padding: 2px 2px 2px 20px;
+        margin: 0;
+        background: url('picture_go.png') no-repeat 0 4px;
+        white-space: nowrap;
+        
+    }
+    
+    #pages li span {
+        padding-left: 5px;
+        font-size: 0.8em;
+        color: #aaa;
+    }
+    
+    h2 span {
+        padding-left: 10px;
+        font-size: 0.9em;
+    }
+    
+    
+    #results {
+        display: none;
+    }
+    
+    #location {
+        /* text-align: center; */
+        border-bottom: solid 1px #729CC2;
+        padding: 6px;
+        color: #358608;
+        margin: 0;
+    }
+    
+    #start {
+    
+        float: right;
+        background-color: #729CC2;
+    
+    }
+    
+    
+  </style>
+  
+ <style type="text/css">
+.action {
+    float: right;
+    margin: 2px;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
+	box-shadow:inset 0px 1px 0px 0px #c1ed9c;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #9dce2c), color-stop(1, #8cb82b) );
+	background-color:#9dce2c;
+	-webkit-border-top-left-radius:6px;
+	border-top-left-radius:6px;
+	-webkit-border-top-right-radius:6px;
+	border-top-right-radius:6px;
+	-webkit-border-bottom-right-radius:6px;
+	border-bottom-right-radius:6px;
+	-webkit-border-bottom-left-radius:6px;
+	border-bottom-left-radius:6px;
+	text-indent:0;
+	border:1px solid #83c41a;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:12px;
+	font-weight:bold;
+	font-style:normal;
+	height:24px;
+	line-height:24px;
+	width:89px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:1px 1px 0px #689324;
+}
+.action:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #9dce2c) );
+	background-color:#8cb82b;
+}.action:active {
+	position:relative;
+	top:1px;
+}
+/* This button was generated using CSSButtonGenerator.com */
+</style>
+
+
+  <body>
+  
+  <div id='load'>
+  
+      <div id="historyBox">
+          <h2>History</h2>
+          <select id="history">
+            <option>
+            <option>http://localhost:8000/threejs-pages
+            <option>http://localhost:8000/mydocs-pages
+          </select>
+      </div>
+      
+      <div id="loaderBox">
+        <h2>Retrieve Config</h2>
+        <input type="text" placeholder="Config Url" id="url" /> <button id="something">Retrieve</button> <br />
+
+      </div>
+  </div>
+
+  <div id="results">
+    <a href="#" class="action" id="import">Start Import</a>
+    <h2  id="location"></h2>
+    
+    <div id="content">
+
+        <h2>Post To: <span id="postTo"></span></h2>
+        
+       <h2>Pages: </h2>
+        <ol id="pages"></ol>
+
+    </div>
+
+  </div>
+
+  </body>
+</html>

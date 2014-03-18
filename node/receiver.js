@@ -5,59 +5,60 @@ var http = require('http'),
     url = require('url'),
     /* easyimg = require('easyimage'), */
     inspect = require('util').inspect,
-    Busboy = require('busboy');
-
-//var JSON.stringify(new Date()).replace(/:/g, '-').replace(/\"/g, '').substring(0, 19)
-
-var port = 8000,
+    Busboy = require('busboy'),
+    /* App State */
+    thumbConfigs = {},
+    port = 8000,
     baseUrl = 'http://localhost:8085/';
 
-var exampleFiles = 'Unable to find examples.js';
+    // Init the two simple config tests
+    initAltConfig();
+    initThreeJSConfig()
 
-//loadThreeJSExamples();
-
-loadSimpleAlternatives();
-
-function loadThreeJSExamples() {
+function initThreeJSConfig() {
     fs.readFile(__dirname + '/examples.js', { encoding: 'utf8' }, function(err, data) {
 
       if(!err) {
-
-        exampleFiles = JSON.parse(data);
-        initFiles();
-
+        thumbConfigs['threejs'] = {
+            postTo: 'http://localhost:8000/',
+            pages: flattenGroups(JSON.parse(data))
+        }
       }
 
     });
+    
+    function flattenGroups(groupedExamples) {
+
+        // Flatten and store file names of Three.js examples - they are grouped in examples.js
+        // by category. Remove the grouping and return an array of page urls
+        var pages = [];
+
+        for (var f in groupedExamples) {
+            var items = groupedExamples[f];
+
+            for (var i = 0, length = items.length; i < length; i++) {
+                pages.push( [items[i], baseUrl + 'examples/' + items[i] + '.html'] );
+            }
+        }
+        
+        return pages;
+    }
 
 }
 
 // Test the ability to push unique urls to the chrome extension to drive thumbnail captures
-function loadSimpleAlternatives() {
+function initAltConfig() {
 
     var files = '05-motormount_short.stl;Arduino_Mega_8mm_Mount001.stl;Arduino_Mount_M6.stl;biggearmod_fixed_1.stl;Danaher-DEFAULT.stl;gah.stl;gregs-wade-v5-mrice-idler-for-M4screws.stl;INGENTIS cut up w-color.stl;MinecraftSupports.stl;NEMA 17.STL;No_Bobbin_XY_A.stl;nuttrap.stl;Plate 6 - Wolf Extruder.stl;Power_Supply_Cover.stl;ramps_14_for_i3_box.stl;Ramps_Mount_with_3DR-Simple-GOYO-Spool-Holder.STL;smallgearmod_fixed_1 (1).stl;smallgearmod_fixed_1.stl;Top_1.stl;Untitled.stl;uploads-55-0a-c1-99-1f-3d_print_screw_hole_test.stl;yourMesh.stl'.split(';');
 
-    queuedExamples = files.map(function(f) {
-        return [f, 'http://localhost:8085/editor/?stl=' + f];
-    });
+    thumbConfigs['mydocs'] = {
+        postTo: 'http://localhost:8000/',
+        pages: files.map(function(f) {
+            return [f, 'http://localhost:8085/editor/?stl=' + f];
+        })
+    };
 
 }
-
-
-function initFiles() {
-
-	// Flatten and store file names of examples
-	queuedExamples = [];
-
-	for (var f in exampleFiles) {
-		var items = exampleFiles[f];
-
-		for (var i = 0, length = items.length; i < length; i++) {
-			queuedExamples.push( [items[i], baseUrl + 'examples/' + items[i] + '.html'] );
-		}
-	}
-}
-
 
 http.createServer(function (req, res) {
     console.log('-------- [ createServer] -------------');
@@ -95,12 +96,16 @@ http.createServer(function (req, res) {
 
         var pathname = url.parse(req.url).pathname;
         
-        console.log('\nGah: ' + pathname);
-        
-        if (pathname == '/url-list') {
+        if (pathname == '/threejs-pages') {
 
             res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(JSON.stringify(queuedExamples));
+            res.write(JSON.stringify(thumbConfigs['threejs']));
+            res.end();
+
+        } else if (pathname == '/mydocs-pages') {
+
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(JSON.stringify(thumbConfigs['mydocs']));
             res.end();
 
         } else {

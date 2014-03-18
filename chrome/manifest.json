@@ -9,7 +9,8 @@
 		"http://localhost:8000/"],
     "browser_action": {
         "default_icon": "capture48.png",
-        "default_title": "Capture tab"      
+        "default_title": "Capture tab",
+        "default_popup": "popup.html"
     },
     "icons": {
         "48" : "capture48.png"
