@@ -1,5 +1,8 @@
-ThreeThumbs - A system consisting of:
-  - a client side browser automation piece capable of navigating to target pages, capturing visible content and posting the results to the output url. 
-  - a node.js application capable of delivering the target pages to acquire as well as storing the captured results
+ThreeThumbs is a browser driven, batched, screenshot system intended for capturing page images for use in thumbnails or web archives. It primarily consists of:
 
-In its current form the client application has hard coded logic and data for the urls to hit and post to. This implementation detail should be decoupled and changed to a model where the client navigates to a url on the node.js piece that lists packages detailing the pages to collect and the target url to post the results to. This would allow provide the flexibility originally envisioned but not tackeled in the first iteration.
+  - a client side browser automation piece capable of navigating to target pages, capturing visible content and posting the resulting images to the specified capture url
+  - a node.js application which delivers the configuration data that describes which urls should be captured, as well as the url to post the captured results to
+  - a node.js application which receives the posted images and stores them for thumbnail generation
+  - (soon) a node.js application which generates the desired thumbnails after receiving the captured images
+
+This package includes Silk Icons developed by Mark James and available at http://www.famfamfam.com/lab/icons/silk/ ([creativecommons 2.5](http://creativecommons.org/licenses/by/2.5/))
